@@ -1,0 +1,345 @@
+import React, { useState, useEffect, useRef } from 'react';
+import { Camera, Send, Image as ImageIcon, Sparkles, Loader2, Upload, Menu, X, Heart, Share2, Link as LinkIcon } from 'lucide-react';
+
+const WeddingSite = () => {
+  const [activeSection, setActiveSection] = useState('gallery');
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [scrollY, setScrollY] = useState(0);
+
+  useEffect(() => {
+    const handleScroll = () => setScrollY(window.scrollY);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const scrollToSection = (id) => {
+    setIsMenuOpen(false);
+    const element = document.getElementById(id);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
+  const handleShare = () => {
+    const mockUrl = "https://jason-amber-wedding-2026.com";
+    // 模擬複製連結
+    navigator.clipboard.writeText(mockUrl).then(() => {
+      alert(`🎉 連結已複製！\n模擬網址：${mockUrl}\n\n(注意：這是一個模擬網址，若要讓親友看到，您需要將此程式碼部署到 Vercel 或 Netlify 等平台喔！)`);
+    }).catch(() => {
+       alert(`🎉 模擬網址：${mockUrl}`);
+    });
+    setIsMenuOpen(false);
+  };
+
+  return (
+    <div className="font-sans text-stone-700 bg-stone-50 selection:bg-rose-200 selection:text-rose-900 overflow-x-hidden">
+      {/* 注入彈幕動畫樣式 */}
+      <style>
+        {`
+          @keyframes danmaku {
+            0% { transform: translateX(100vw); }
+            100% { transform: translateX(-100%); }
+          }
+          .animate-danmaku {
+            animation: danmaku linear infinite;
+            will-change: transform;
+          }
+        `}
+      </style>
+
+      {/* 導覽列 */}
+      <nav className={`fixed w-full z-50 transition-all duration-300 ${scrollY > 50 ? 'bg-white/90 backdrop-blur-md shadow-sm py-3' : 'bg-transparent py-6'}`}>
+        <div className="container mx-auto px-6 flex justify-between items-center">
+          <div className="text-2xl font-serif text-rose-900 tracking-widest cursor-pointer font-bold" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
+            J & A
+          </div>
+          
+          <div className="hidden md:flex items-center space-x-8">
+            <button onClick={() => scrollToSection('gallery')} className="text-sm tracking-widest hover:text-rose-500 transition-colors uppercase font-medium">甜蜜相簿</button>
+            <button onClick={() => scrollToSection('wishes')} className="text-sm tracking-widest hover:text-rose-500 transition-colors uppercase font-medium">祝福留言牆</button>
+            <button 
+              onClick={handleShare}
+              className="flex items-center gap-2 px-4 py-2 bg-rose-500 hover:bg-rose-600 text-white rounded-full text-xs font-bold transition-all shadow-md hover:shadow-lg active:scale-95"
+            >
+              <Share2 size={14} />
+              <span>分享喜帖</span>
+            </button>
+          </div>
+
+          <button className="md:hidden text-stone-700" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+            {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
+        </div>
+
+        {/* Mobile Menu */}
+        {isMenuOpen && (
+          <div className="md:hidden absolute top-full left-0 w-full bg-white shadow-lg py-4 flex flex-col items-center space-y-4 border-t border-stone-100 animate-fade-in">
+            <button onClick={() => scrollToSection('gallery')} className="text-lg py-2 w-full text-center hover:bg-rose-50">甜蜜相簿</button>
+            <button onClick={() => scrollToSection('wishes')} className="text-lg py-2 w-full text-center hover:bg-rose-50">祝福留言牆</button>
+            <button onClick={handleShare} className="text-lg py-2 w-full text-center text-rose-600 font-bold flex items-center justify-center gap-2">
+              <LinkIcon size={18} />
+              複製連結
+            </button>
+          </div>
+        )}
+      </nav>
+
+      {/* 迷你 Hero Header */}
+      <header className="relative py-24 bg-stone-900 text-white text-center overflow-hidden">
+        <div className="absolute inset-0 opacity-40">
+           <img 
+            src="https://images.unsplash.com/photo-1519225421980-715cb0202128?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80" 
+            alt="Background" 
+            className="w-full h-full object-cover"
+          />
+        </div>
+        <div className="relative z-10 animate-fade-up">
+          <h1 className="text-4xl md:text-6xl font-serif tracking-wide mb-2">Jason & Amber</h1>
+          <p className="text-lg tracking-[0.2em] font-light text-rose-200">WEDDING GALLERY & WISHES</p>
+        </div>
+      </header>
+
+      {/* 1. Gallery - 相簿 */}
+      <section id="gallery" className="py-20 bg-white">
+        <div className="container mx-auto px-4 md:px-12">
+          <div className="text-center mb-12">
+            <div className="flex items-center justify-center gap-2 text-rose-400 mb-2">
+              <Camera size={20} />
+              <span className="tracking-widest uppercase text-sm font-bold">Moments</span>
+            </div>
+            <h2 className="text-3xl md:text-4xl font-serif text-stone-800">我們的甜蜜時刻</h2>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 auto-rows-[250px] md:auto-rows-[300px]">
+             {[
+              { src: "https://images.unsplash.com/photo-1511285560982-1351cdeb9821?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80", span: "md:col-span-2" },
+              { src: "https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80", span: "" },
+              { src: "https://images.unsplash.com/photo-1519741497674-611481863552?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80", span: "" },
+              { src: "https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80", span: "md:col-span-2" },
+              { src: "https://images.unsplash.com/photo-1532712938310-34cb3958d42d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80", span: "" },
+              { src: "https://images.unsplash.com/photo-1583939003579-730e3918a45a?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80", span: "" }
+            ].map((item, index) => (
+              <div key={index} className={`relative group overflow-hidden rounded-lg cursor-pointer ${item.span}`}>
+                <img 
+                  src={item.src} 
+                  alt={`Gallery ${index}`} 
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" 
+                />
+                <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                  <Heart className="text-white fill-white drop-shadow-md" size={32} />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* 2. Wishes Wall - 彈幕留言牆 */}
+      <DanmakuSection />
+
+      {/* Footer */}
+      <footer className="bg-stone-900 text-stone-500 py-8 text-center text-xs">
+        <p>© 2026 Jason & Amber Wedding.</p>
+      </footer>
+    </div>
+  );
+};
+
+// --------------------------------------------------------------------------
+// Helper: Gemini API
+// --------------------------------------------------------------------------
+const generateContent = async (prompt) => {
+  const apiKey = ""; // Injected at runtime
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+  
+  try {
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+    });
+    if (!response.ok) throw new Error('API Failed');
+    const data = await response.json();
+    return data.candidates?.[0]?.content?.parts?.[0]?.text || "";
+  } catch (error) {
+    return null;
+  }
+};
+
+// --------------------------------------------------------------------------
+// Component: Danmaku Wall & Input Form
+// --------------------------------------------------------------------------
+const DanmakuSection = () => {
+  // 預設留言資料
+  const initialComments = [
+    { id: 1, name: "小明", text: "恭喜你們！一定要幸福喔！❤️❤️", avatar: null, top: 10, duration: 15, delay: 0 },
+    { id: 2, name: "Jessica", text: "新娘今天太美了吧！！😍😍", avatar: null, top: 30, duration: 18, delay: 2 },
+    { id: 3, name: "阿強", text: "早生貴子！", avatar: null, top: 50, duration: 12, delay: 5 },
+    { id: 4, name: "Kelly", text: "終於等到這一天了，好感動😭", avatar: null, top: 70, duration: 20, delay: 1 },
+    { id: 5, name: "陳總", text: "恭喜 Jason，工作狂終於要成家了👍", avatar: null, top: 20, duration: 16, delay: 8 },
+  ];
+
+  const [comments, setComments] = useState(initialComments);
+  const [form, setForm] = useState({ name: '', text: '', avatar: null });
+  const [avatarPreview, setAvatarPreview] = useState(null);
+  
+  // AI 狀態
+  const [showAi, setShowAi] = useState(false);
+  const [aiLoading, setAiLoading] = useState(false);
+
+  // 處理大頭貼上傳
+  const handleAvatarChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const url = URL.createObjectURL(file);
+      setForm(prev => ({ ...prev, avatar: file }));
+      setAvatarPreview(url);
+    }
+  };
+
+  // 處理送出留言
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!form.name || !form.text) return;
+
+    const newComment = {
+      id: Date.now(),
+      name: form.name,
+      text: form.text,
+      avatar: avatarPreview, // 使用預覽 URL
+      top: Math.floor(Math.random() * 80) + 5, // 隨機高度 5% - 85%
+      duration: Math.floor(Math.random() * 10) + 10, // 隨機速度 10s - 20s
+      delay: 0
+    };
+
+    setComments(prev => [...prev, newComment]);
+    
+    // 重置表單
+    setForm({ name: '', text: '', avatar: null });
+    setAvatarPreview(null);
+    setShowAi(false);
+  };
+
+  // AI 產生祝福語
+  const handleAiGenerate = async () => {
+    setAiLoading(true);
+    const prompt = `
+      請幫我寫一句簡短的婚禮祝福語 (繁體中文)，
+      風格要活潑、溫馨，適合像彈幕一樣飄過去的長度 (20字以內)。
+      直接給我內容就好，不要解釋。
+    `;
+    const text = await generateContent(prompt);
+    if (text) setForm(prev => ({ ...prev, text: text }));
+    setAiLoading(false);
+  };
+
+  return (
+    <section id="wishes" className="relative bg-stone-100 overflow-hidden" style={{ height: '600px' }}>
+      {/* 背景裝飾 */}
+      <div className="absolute inset-0 opacity-10 pointer-events-none">
+        <div className="absolute top-10 left-10 w-32 h-32 bg-rose-400 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-10 right-10 w-40 h-40 bg-blue-300 rounded-full blur-3xl"></div>
+      </div>
+
+      <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none z-10">
+        <h2 className="text-4xl md:text-5xl font-serif text-stone-300 opacity-50 tracking-widest uppercase">Best Wishes</h2>
+      </div>
+
+      {/* 彈幕顯示層 */}
+      <div className="absolute inset-0 overflow-hidden z-0">
+        {comments.map((comment) => (
+          <div
+            key={comment.id}
+            className="absolute flex items-center gap-3 bg-white/80 backdrop-blur-sm px-4 py-2 rounded-full shadow-md animate-danmaku whitespace-nowrap border border-white/50"
+            style={{
+              top: `${comment.top}%`,
+              left: '100%', // 初始位置在最右側
+              animationDuration: `${comment.duration}s`,
+              animationDelay: `${comment.delay}s`,
+            }}
+          >
+            {/* 大頭貼顯示 */}
+            <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-rose-200 bg-stone-200 flex-shrink-0">
+              {comment.avatar ? (
+                <img src={comment.avatar} alt="avatar" className="w-full h-full object-cover" />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center bg-rose-100 text-rose-500 font-bold text-lg">
+                  {comment.name.charAt(0)}
+                </div>
+              )}
+            </div>
+            
+            <div className="flex flex-col">
+              <span className="text-xs text-rose-500 font-bold">{comment.name}</span>
+              <span className="text-stone-800 font-medium">{comment.text}</span>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* 底部輸入表單區塊 */}
+      <div className="absolute bottom-0 w-full z-20 p-4 md:p-6 bg-white/90 backdrop-blur-md border-t border-rose-100 shadow-[0_-4px_20px_rgba(0,0,0,0.05)]">
+        <div className="container mx-auto max-w-4xl">
+          <form onSubmit={handleSubmit} className="flex flex-col md:flex-row gap-4 items-start md:items-end">
+            
+            {/* 左側：大頭貼上傳 */}
+            <div className="flex-shrink-0">
+              <label className="block text-xs font-bold text-stone-500 mb-1 ml-1">你的頭像</label>
+              <label className="cursor-pointer group relative w-16 h-16 rounded-full bg-stone-100 border-2 border-dashed border-stone-300 hover:border-rose-400 flex items-center justify-center overflow-hidden transition-colors">
+                {avatarPreview ? (
+                  <img src={avatarPreview} alt="Preview" className="w-full h-full object-cover" />
+                ) : (
+                  <Upload className="text-stone-400 group-hover:text-rose-500" size={24} />
+                )}
+                <input type="file" accept="image/*" onChange={handleAvatarChange} className="hidden" />
+              </label>
+            </div>
+
+            {/* 中間：姓名與內容 */}
+            <div className="flex-grow w-full space-y-2">
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  placeholder="暱稱/名字"
+                  value={form.name}
+                  onChange={(e) => setForm({ ...form, name: e.target.value })}
+                  className="w-1/3 px-4 py-2 bg-stone-50 border border-stone-200 rounded-full focus:outline-none focus:ring-2 focus:ring-rose-200 text-sm"
+                  required
+                />
+                <button
+                  type="button"
+                  onClick={handleAiGenerate}
+                  disabled={aiLoading}
+                  className="flex items-center gap-1 px-3 py-2 bg-rose-50 text-rose-600 rounded-full text-xs hover:bg-rose-100 transition-colors whitespace-nowrap"
+                >
+                  {aiLoading ? <Loader2 size={12} className="animate-spin" /> : <Sparkles size={12} />}
+                  {aiLoading ? '生成中...' : 'AI 幫我想'}
+                </button>
+              </div>
+
+              <input
+                type="text"
+                placeholder="寫下你的祝福... (會像彈幕一樣飄出來喔！)"
+                value={form.text}
+                onChange={(e) => setForm({ ...form, text: e.target.value })}
+                className="w-full px-5 py-3 bg-stone-50 border border-stone-200 rounded-full focus:outline-none focus:ring-2 focus:ring-rose-200 shadow-inner"
+                required
+              />
+            </div>
+
+            {/* 右側：送出按鈕 */}
+            <button
+              type="submit"
+              className="w-full md:w-auto px-8 py-3 bg-rose-500 hover:bg-rose-600 text-white font-bold rounded-full shadow-lg shadow-rose-200 transition-transform active:scale-95 flex items-center justify-center gap-2"
+            >
+              <Send size={18} />
+              <span>發送彈幕</span>
+            </button>
+          </form>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+export default WeddingSite;
